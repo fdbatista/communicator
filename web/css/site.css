@@ -138,3 +138,7 @@ a.desc:after {
     color: #fff;
     background-color: #1f4971;
 }
+
+.mt-5 {
+    margin-top: -5px;
+}
