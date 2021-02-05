@@ -1,5 +1,8 @@
 <?php
 
+use app\utils\MessageRecipientsUtil;
+use kartik\editors\Summernote;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,25 +15,49 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'type_id')->textInput() ?>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <label for="recipients">Destinatarios</label>
+                <?= Select2::widget([
+                    'name' => 'recipients',
+                    'value' => MessageRecipientsUtil::getMessageRecipientsIds($model->id),
+                    'data' => MessageRecipientsUtil::getAvailableRecipients(),
+                    'theme' => Select2::THEME_DEFAULT,
+                    'options' => ['multiple' => true, 'placeholder' => 'Seleccione'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]) ?>
+            </div>
+            <div class="col-lg-6">
+                <?= $form->field($model, 'subject')->textInput()->label('Asunto') ?>
+            </div>
+        </div>
 
-    <?= $form->field($model, 'unread')->textInput() ?>
+        <div class="row" style="padding-bottom: 20px">
+            <div class="col-lg-10">
+                <label>Contenido del mensaje</label>
+                <?= Summernote::widget([
+                    'model' => $model,
+                    'attribute' => 'body',
+                    'useKrajeeStyle' => true,
+                    'useKrajeePresets' => true,
+                    'enableFullScreen' => false,
+                    'enableCodeView' => false,
+                    'enableHelp' => false,
+                    'enableHintEmojis' => true,
+                ]) ?>
+            </div>
+        </div>
 
-    <?= $form->field($model, 'sender_id')->textInput() ?>
-
-    <?= $form->field($model, 'recipient_id')->textInput() ?>
-
-    <?= $form->field($model, 'subject')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'body')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'date_sent')->textInput() ?>
-
-    <?= $form->field($model, 'date_received')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <div class="row" style="margin-left: 0">
+            <div class="form-group">
+                <?= Html::submitButton('<i class="glyphicon glyphicon-send"></i> Enviar', ['class' => 'btn btn-info']) ?>
+            </div>
+        </div>
     </div>
+
 
     <?php ActiveForm::end(); ?>
 
