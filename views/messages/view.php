@@ -1,44 +1,97 @@
 <?php
 
+use app\utils\AuthUtil;
+use app\utils\MessageRecipientsUtil;
+use kartik\editors\Summernote;
 use yii\helpers\Html;
+use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\entities\Message */
+/* @var $recipients */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Messages', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Mensajes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
+$this->registerCssFile('@web/css/view-message.css');
+YiiAsset::register($this);
 ?>
 <div class="message-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?php
+        if (AuthUtil::iAmAdmin())
+            echo Html::a('<i class="glyphicon glyphicon-edit"></i> Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+        ?>
+
+        <?php
+        echo Html::a('<i class="glyphicon glyphicon-trash"></i> Eliminar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => '¿Seguro que desea eliminar este mensaje?',
                 'method' => 'post',
             ],
-        ]) ?>
+        ]);
+        ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'type_id',
-            'unread',
-            'sender_id',
-            'recipient_id',
-            'subject',
-            'body:ntext',
-            'date_sent',
-            'date_received',
+    <?php
+    $attributes = [
+        [
+            'attribute' => 'created_at',
+            'label' => 'Fecha',
+            'format' => 'datetime',
         ],
+
+        [
+            'attribute' => 'sender',
+            'label' => 'Remitente',
+            'value' => $model->sender->full_name,
+        ],
+
+        [
+            'attribute' => 'subject',
+            'label' => 'Asunto'
+        ],
+
+        [
+            'attribute' => 'body',
+            'label' => 'Mensaje',
+            'format' => 'raw',
+            'value' => function ($model) {
+                return Summernote::widget([
+                    'model' => $model,
+                    'attribute' => 'body',
+                    'useKrajeeStyle' => true,
+                    'useKrajeePresets' => true,
+                    'enableFullScreen' => false,
+                    'enableCodeView' => false,
+                    'enableHelp' => false,
+                    'enableHintEmojis' => false,
+                ]);
+            }
+        ],
+    ];
+
+    if (AuthUtil::iAmAdmin()) {
+        $recipients = MessageRecipientsUtil::getMessageRecipientsNames($model);
+        $readers = MessageRecipientsUtil::readBy($model->id);
+
+        $attributes[] = [
+            'label' => 'Enviado a',
+            'value' => implode(', ', $recipients),
+        ];
+
+        $attributes[] = [
+            'label' => 'Leído por',
+            'value' => implode(', ', $readers),
+        ];
+    }
+
+    echo DetailView::widget([
+        'model' => $model,
+        'attributes' => $attributes,
     ]) ?>
 
 </div>
