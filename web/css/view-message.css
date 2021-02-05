@@ -1,0 +1,7 @@
+.note-toolbar, .note-status-output {
+    display: none !important;
+}
+
+.kv-editor-container {
+    border: none !important;
+}
