@@ -15,14 +15,15 @@ class m210204_183652_create_message_table extends Migration
         $this->createTable('{{%message}}', [
             'id' => $this->primaryKey(),
             'type_id' => $this->integer()->notNull()->defaultValue(1),
-            'unread' => $this->integer()->notNull()->defaultValue(1),
             'sender_id' => $this->integer()->notNull(),
-            'recipient_id' => $this->integer()->notNull(),
             'subject' => $this->string()->notNull(),
             'body' => $this->text()->notNull(),
-            'date_sent' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
-            'date_received' => $this->dateTime(),
+            'created_at' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
         ]);
+
+        $this->addForeignKey('fk_message_type', 'message', 'type_id', 'message_type', 'id', 'cascade', 'cascade');
+        $this->addForeignKey('fk_message_sender', 'message', 'sender_id', 'user', 'id', 'cascade', 'cascade');
+
     }
 
     /**
