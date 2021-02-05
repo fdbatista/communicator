@@ -15,6 +15,9 @@ use Yii;
  * @property string|null $mobile_number
  * @property string $email
  *
+ * @property Message[] $messages
+ * @property MessageRecipient[] $messageRecipients
+ * @property Message[] $messages0
  * @property RoleUser[] $roleUsers
  */
 class User extends \yii\db\ActiveRecord
@@ -57,6 +60,36 @@ class User extends \yii\db\ActiveRecord
             'mobile_number' => Yii::t('app', 'Mobile Number'),
             'email' => Yii::t('app', 'Email'),
         ];
+    }
+
+    /**
+     * Gets query for [[Messages]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMessages()
+    {
+        return $this->hasMany(Message::className(), ['sender_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[MessageRecipients]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMessageRecipients()
+    {
+        return $this->hasMany(MessageRecipient::className(), ['recipient_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Messages0]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMessages0()
+    {
+        return $this->hasMany(Message::className(), ['id' => 'message_id'])->viaTable('message_recipient', ['recipient_id' => 'id']);
     }
 
     /**
