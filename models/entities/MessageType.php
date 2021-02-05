@@ -9,6 +9,8 @@ use Yii;
  *
  * @property int $id
  * @property string|null $name
+ *
+ * @property Message[] $messages
  */
 class MessageType extends \yii\db\ActiveRecord
 {
@@ -39,5 +41,15 @@ class MessageType extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Name'),
         ];
+    }
+
+    /**
+     * Gets query for [[Messages]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMessages()
+    {
+        return $this->hasMany(Message::className(), ['type_id' => 'id']);
     }
 }

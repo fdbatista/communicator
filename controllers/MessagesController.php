@@ -3,17 +3,19 @@
 namespace app\controllers;
 
 use app\models\entities\Message;
+use app\models\entities\MessageRecipient;
+use app\models\search\MessageRecipientSearch;
 use app\models\search\MessageSearch;
+use app\utils\AuthUtil;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
  * MessagesController implements the CRUD actions for Message model.
  */
-class MessagesController extends Controller
+class MessagesController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -25,15 +27,15 @@ class MessagesController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['create'],
+                        'actions' => ['create', 'update'],
                         'allow' => true,
                         'roles' => ['@'],
-                        'matchCallback' => function() {
-                            return Yii::$app->user->identity->isAdmin();
+                        'matchCallback' => function () {
+                            return AuthUtil::iAmAdmin();
                         }
                     ],
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index', 'view', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -54,10 +56,17 @@ class MessagesController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new MessageSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        if (AuthUtil::iAmAdmin()) {
+            $searchModel = new MessageSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $view = 'index';
+        } else {
+            $searchModel = new MessageRecipientSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            $view = 'index-recipient';
+        }
 
-        return $this->render('index', [
+        return $this->render($view, [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -71,9 +80,19 @@ class MessagesController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        if (AuthUtil::iAmAdmin()) {
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        } else {
+            $messageRecipient = MessageRecipient::findOne($id);
+            $messageRecipient->unread = 0;
+            $messageRecipient->save();
+
+            return $this->render('view', [
+                'model' => $this->findModel($messageRecipient->message_id),
+            ]);
+        }
     }
 
     /**
@@ -85,8 +104,14 @@ class MessagesController extends Controller
     {
         $model = new Message();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->sender_id = Yii::$app->user->getId();
+
+            if ($model->save()) {
+                $this->saveRecipients($model->id);
+
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('create', [
@@ -106,7 +131,9 @@ class MessagesController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $this->updateRecipients($id);
+
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -123,7 +150,11 @@ class MessagesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if (AuthUtil::iAmAdmin()) {
+            $this->findModel($id)->delete();
+        } else {
+            MessageRecipient::findOne($id)->delete();
+        }
 
         return $this->redirect(['index']);
     }
@@ -143,4 +174,28 @@ class MessagesController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    private function saveRecipients(int $messageId)
+    {
+        $recipients = Yii::$app->request->post('recipients');
+        $transaction = Yii::$app->db->beginTransaction();
+
+        foreach ($recipients as $recipient) {
+            $recipientModel = new MessageRecipient([
+                'message_id' => $messageId,
+                'recipient_id' => $recipient,
+                'unread' => 1,
+            ]);
+
+            $recipientModel->save();
+        }
+        $transaction->commit();
+    }
+
+    private function updateRecipients(int $messageId)
+    {
+        MessageRecipient::deleteAll(['message_id' => $messageId]);
+        $this->saveRecipients($messageId);
+    }
+
 }

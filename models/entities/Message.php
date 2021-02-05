@@ -9,13 +9,15 @@ use Yii;
  *
  * @property int $id
  * @property int $type_id
- * @property int $unread
  * @property int $sender_id
- * @property int $recipient_id
  * @property string $subject
  * @property string $body
- * @property string $date_sent
- * @property string|null $date_received
+ * @property string $created_at
+ *
+ * @property User $sender
+ * @property MessageType $type
+ * @property MessageRecipient[] $messageRecipients
+ * @property User[] $recipients
  */
 class Message extends \yii\db\ActiveRecord
 {
@@ -33,11 +35,13 @@ class Message extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type_id', 'unread', 'sender_id', 'recipient_id'], 'integer'],
-            [['sender_id', 'recipient_id', 'subject', 'body'], 'required'],
+            [['type_id', 'sender_id'], 'integer'],
+            [['sender_id', 'subject', 'body'], 'required'],
             [['body'], 'string'],
-            [['date_sent', 'date_received'], 'safe'],
+            [['created_at'], 'safe'],
             [['subject'], 'string', 'max' => 255],
+            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
+            [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => MessageType::className(), 'targetAttribute' => ['type_id' => 'id']],
         ];
     }
 
@@ -49,13 +53,50 @@ class Message extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'type_id' => Yii::t('app', 'Type ID'),
-            'unread' => Yii::t('app', 'Unread'),
             'sender_id' => Yii::t('app', 'Sender ID'),
-            'recipient_id' => Yii::t('app', 'Recipient ID'),
             'subject' => Yii::t('app', 'Subject'),
             'body' => Yii::t('app', 'Body'),
-            'date_sent' => Yii::t('app', 'Date Sent'),
-            'date_received' => Yii::t('app', 'Date Received'),
+            'created_at' => Yii::t('app', 'Created At'),
         ];
+    }
+
+    /**
+     * Gets query for [[Sender]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSender()
+    {
+        return $this->hasOne(User::className(), ['id' => 'sender_id']);
+    }
+
+    /**
+     * Gets query for [[Type]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getType()
+    {
+        return $this->hasOne(MessageType::className(), ['id' => 'type_id']);
+    }
+
+    /**
+     * Gets query for [[MessageRecipients]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMessageRecipients()
+    {
+        return $this->hasMany(MessageRecipient::className(), ['message_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Recipients]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRecipients()
+    {
+        return $this->hasMany(User::className(), ['id' => 'recipient_id'])->viaTable('message_recipient', ['message_id' => 'id']);
     }
 }
