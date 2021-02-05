@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\models\entities\RoleUser;
 use app\models\entities\User as UserEntity;
 use Yii;
 use yii\web\IdentityInterface;
@@ -42,6 +43,12 @@ class User extends UserEntity implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    public function isAdmin() {
+        return array_filter($this->roleUsers, function (RoleUser $roleUser) {
+           return $roleUser->role_id === 1;
+        });
     }
 
 }

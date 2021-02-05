@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\LoginForm;
+use app\models\ResetPasswordModel;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -19,10 +20,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'logout'],
+                'only' => ['logout', 'about'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'logout'],
+                        'actions' => ['logout', 'about'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -54,16 +55,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionIndex()
-    {
-        return $this->render('index');
-    }
-
-    /**
      * Login action.
      *
      * @return Response|string
@@ -74,14 +65,33 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        $loginModel = new LoginForm();
+        if ($loginModel->load(Yii::$app->request->post()) && $loginModel->login()) {
             return $this->goBack();
         }
 
-        $model->password = '';
+        $loginModel->password = '';
         return $this->render('login', [
-            'model' => $model,
+            'loginModel' => $loginModel,
+            'resetPasswordModel' => new ResetPasswordModel(),
+        ]);
+    }
+
+    public function actionResetPassword()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $resetPasswordModel = new ResetPasswordModel();
+        if ($resetPasswordModel->load(Yii::$app->request->post()) && $resetPasswordModel->validate()) {
+            return $this->goBack();
+        }
+
+        $resetPasswordModel->email = '';
+        return $this->render('login', [
+            'loginModel' => new LoginForm(),
+            'resetPasswordModel' => $resetPasswordModel,
         ]);
     }
 
@@ -106,4 +116,5 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
 }
