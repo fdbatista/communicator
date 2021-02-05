@@ -4,12 +4,12 @@
 
 /* @var $content string */
 
+use app\assets\AppAsset;
 use app\widgets\Alert;
-use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
-use app\assets\AppAsset;
 
 AppAsset::register($this);
 $this->title = 'BeePer';
@@ -22,6 +22,7 @@ $this->title = 'BeePer';
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
+
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
@@ -30,37 +31,38 @@ $this->title = 'BeePer';
 
 <div class="wrap">
     <?php
-    NavBar::begin([
-        'brandLabel' => Html::img('@web/img/logo.png', [
+    if (!Yii::$app->user->isGuest) {
+        NavBar::begin([
+            'brandLabel' => Html::img('@web/img/logo.png', [
                 'style' => 'height: 30px',
                 'class' => 'mt-5'
-        ]),
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-            ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
+            ]),
+            'brandUrl' => Yii::$app->homeUrl,
+            'options' => [
+                'class' => 'navbar-inverse navbar-fixed-top',
+            ],
+        ]);
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav navbar-right'],
+            'items' => [
+                ['label' => 'Inicio', 'url' => ['/site/index']],
+                ['label' => 'Acerca de', 'url' => ['/site/about']],
+                Yii::$app->user->isGuest ? (
+                ['label' => 'Acceder', 'url' => ['/site/login']]
+                ) : (
+                    '<li>'
+                    . Html::beginForm(['/site/logout'], 'post')
+                    . Html::submitButton(
+                        'Logout (' . Yii::$app->user->identity->user_name . ')',
+                        ['class' => 'btn btn-link logout']
+                    )
+                    . Html::endForm()
+                    . '</li>'
                 )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
-    ]);
-    NavBar::end();
+            ],
+        ]);
+        NavBar::end();
+    }
     ?>
 
     <div class="container">
@@ -72,14 +74,16 @@ $this->title = 'BeePer';
     </div>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
-    </div>
-</footer>
-
+<?php if (!Yii::$app->user->isGuest) { ?>
+    <footer class="footer">
+        <div class="container">
+            <p class="text-center">
+                <?= Html::img('@web/img/logo_no_text.png', ['height' => '20px']) ?>
+                <b>bee</b>per
+            </p>
+        </div>
+    </footer>
+<?php } ?>
 <?php $this->endBody() ?>
 </body>
 </html>

@@ -96,9 +96,9 @@ a.desc:after {
     border: none;
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
     .nav li > form > button.logout {
-        display:block;
+        display: block;
         text-align: left;
         width: 100%;
         padding: 10px 15px;
@@ -125,13 +125,19 @@ a.desc:after {
     background: -o-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
     background: -ms-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
     background: linear-gradient(to right, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2dacf0', endColorstr='#2b669a', GradientType=1 );
-    color: #ffffff!important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2dacf0', endColorstr='#2b669a', GradientType=1);
+    color: #ffffff !important;
     border-bottom: none;
 }
 
+.footer {
+    background: #5aa7d1;
+    color: #ffffff !important;
+    border-top: none;
+}
+
 .navbar-inverse .navbar-nav > li > a {
-    color: #ffffff!important;
+    color: #ffffff !important;
 }
 
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
