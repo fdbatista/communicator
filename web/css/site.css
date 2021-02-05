@@ -149,19 +149,19 @@ a.desc:after {
     margin-top: -5px;
 }
 
-.dropdown .open {
-    background-color: #2b669a;
+.navbar li:hover {
+    background-color: #2b669a !important;
 }
 
-.nav li > form > button {
-    padding-left: 20px!important;
-    padding-bottom: 5px!important;
-    width: 100%;
-    text-align: left;
-}
-
-.nav li > form > button:hover {
-    background-color: #2b669a;
-    color: #ffffff;
+.navbar-inverse .btn-link {
+    color: #2b669a !important;
     text-decoration: none;
+    text-align: left;
+    width: 100%;
+    padding: 10px 0 10px 20px !important;
+}
+
+.navbar-inverse .btn-link:hover {
+    background-color: #2b669a;
+    color: #ffffff !important;
 }
