@@ -5,6 +5,7 @@
 /* @var $content string */
 
 use app\assets\AppAsset;
+use app\utils\MenuUtil;
 use app\widgets\Alert;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -42,24 +43,11 @@ $this->title = 'BeePer';
                 'class' => 'navbar-inverse navbar-fixed-top',
             ],
         ]);
+
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav navbar-right'],
-            'items' => [
-                ['label' => 'Inicio', 'url' => ['/site/index']],
-                ['label' => 'Acerca de', 'url' => ['/site/about']],
-                Yii::$app->user->isGuest ? (
-                ['label' => 'Acceder', 'url' => ['/site/login']]
-                ) : (
-                    '<li>'
-                    . Html::beginForm(['/site/logout'], 'post')
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->user_name . ')',
-                        ['class' => 'btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-                )
-            ],
+            'items' => MenuUtil::getMenuItems(),
+            'encodeLabels' => false,
         ]);
         NavBar::end();
     }

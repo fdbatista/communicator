@@ -148,3 +148,20 @@ a.desc:after {
 .mt-5 {
     margin-top: -5px;
 }
+
+.dropdown .open {
+    background-color: #2b669a;
+}
+
+.nav li > form > button {
+    padding-left: 20px!important;
+    padding-bottom: 5px!important;
+    width: 100%;
+    text-align: left;
+}
+
+.nav li > form > button:hover {
+    background-color: #2b669a;
+    color: #ffffff;
+    text-decoration: none;
+}
