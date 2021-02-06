@@ -17,7 +17,7 @@ class m210204_183652_create_message_table extends Migration
             'type_id' => $this->integer()->notNull()->defaultValue(1),
             'sender_id' => $this->integer()->notNull(),
             'subject' => $this->string()->notNull(),
-            'body' => $this->text()->notNull(),
+            'body' => 'LONGTEXT',
             'created_at' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
         ]);
 
