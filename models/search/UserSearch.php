@@ -3,6 +3,7 @@
 namespace app\models\search;
 
 use app\models\entities\User;
+use app\utils\AuthUtil;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -66,7 +67,8 @@ class UserSearch extends User
             ->andFilterWhere(['like', 'password', $this->password])
             ->andFilterWhere(['like', 'auth_token', $this->auth_token])
             ->andFilterWhere(['like', 'mobile_number', $this->mobile_number])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['not', ['id' => AuthUtil::getMyId()]]);
 
         return $dataProvider;
     }
