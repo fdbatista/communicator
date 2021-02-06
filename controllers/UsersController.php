@@ -8,13 +8,12 @@ use app\utils\AuthUtil;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
- * UserController implements the CRUD actions for User model.
+ * UsersController implements the CRUD actions for User model.
  */
-class UserController extends Controller
+class UsersController extends BaseController
 {
     /**
      * {@inheritdoc}
