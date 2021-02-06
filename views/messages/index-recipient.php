@@ -42,9 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'sender',
                 'label' => 'Remitente',
                 'format' => 'raw',
-                'value' => function($searchModel) {
-                    $spanClass = $searchModel->unread === 1 ? 'unread-message' : '';
-                    return "<span class='$spanClass'>$searchModel->sender</span>";
+                'value' => function ($model) {
+                    $spanClass = $model->unread === 1 ? 'unread-message' : '';
+
+                    return Html::a($model->sender, Url::to(['view', 'id' => $model->message_id]), [
+                        'class' => $spanClass,
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'title' => 'Ver mensaje'
+                    ]);
                 },
             ],
 
@@ -52,9 +58,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'subject',
                 'label' => 'Asunto',
                 'format' => 'raw',
-                'value' => function($searchModel) {
-                    $spanClass = $searchModel->unread === 1 ? 'unread-message' : '';
-                    return "<span class='$spanClass'>$searchModel->subject</span>";
+                'value' => function ($model) {
+                    $spanClass = $model->unread === 1 ? 'unread-message' : '';
+                    $icon = $model->unread === 1 ? '<i class="glyphicon glyphicon-certificate"></i>' : '';
+
+                    return Html::a("$icon $model->subject", Url::to(['view', 'id' => $model->message_id]), [
+                        'class' => $spanClass,
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'title' => 'Ver mensaje'
+                    ]);
                 },
             ],
 
@@ -78,11 +91,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header' => 'Acciones',
                 'headerOptions' => ['style' => 'color:#337ab7'],
-                'template' => '{view} {delete}',
+                'template' => '{delete}',
                 'buttons' => [
-                    'view' => function ($url, $model) {
-                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>', Url::to(['view', 'id' => $model->message_id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Ver"]);
-                    },
                     'delete' => function ($url, $model) {
                         return Html::a('<i class="glyphicon glyphicon-trash"></i>', Url::to(['delete', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Eliminar", 'data' => [
                             'confirm' => '¿Seguro que desea eliminar este mensaje?',
