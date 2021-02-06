@@ -10,8 +10,10 @@ services:
       - .env
     networks:
       - beeper_network
+    depends_on:
+      - db
     ports:
-      - 8000:80
+      - 8082:80
 
   db:
     image: mysql:5.7.29
@@ -28,8 +30,6 @@ services:
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
-    ports:
-      - 3306:3306
 
 networks:
   beeper_network:
