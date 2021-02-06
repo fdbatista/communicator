@@ -81,6 +81,13 @@ class MessagesController extends BaseController
      */
     public function actionView($id)
     {
+        if (!AuthUtil::iAmAdmin()) {
+            MessageRecipient::findOne([
+                'message_id' => $id,
+                'recipient_id' => AuthUtil::getMyId(),
+            ])->updateAttributes(['unread' => 0]);
+        }
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
