@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use app\models\entities\Message;
 use app\models\entities\MessageRecipient;
-use app\models\search\MessageRecipientSearch;
 use app\models\search\MessageSearch;
+use app\models\search\VMessageRecipientSearch;
 use app\utils\AuthUtil;
 use Yii;
 use yii\filters\AccessControl;
@@ -61,7 +61,8 @@ class MessagesController extends BaseController
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $view = 'index';
         } else {
-            $searchModel = new MessageRecipientSearch();
+            $searchModel = new VMessageRecipientSearch();
+            $searchModel->recipient_id = AuthUtil::getMyId();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $view = 'index-recipient';
         }
@@ -80,19 +81,9 @@ class MessagesController extends BaseController
      */
     public function actionView($id)
     {
-        if (AuthUtil::iAmAdmin()) {
-            return $this->render('view', [
-                'model' => $this->findModel($id),
-            ]);
-        } else {
-            $messageRecipient = MessageRecipient::findOne($id);
-            $messageRecipient->unread = 0;
-            $messageRecipient->save();
-
-            return $this->render('view', [
-                'model' => $this->findModel($messageRecipient->message_id),
-            ]);
-        }
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
     /**
