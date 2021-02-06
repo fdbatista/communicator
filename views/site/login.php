@@ -4,6 +4,7 @@
 /* @var $form yii\bootstrap\ActiveForm */
 
 /* @var $loginModel app\models\LoginForm */
+
 /* @var $resetPasswordModel app\models\ResetPasswordModel */
 
 use yii\bootstrap\ActiveForm;
