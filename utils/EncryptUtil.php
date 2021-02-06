@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace app\utils;
 
-class EncryptionUtil
+class EncryptUtil
 {
     private static int $OPTIONS = 0;
 
@@ -18,7 +18,7 @@ class EncryptionUtil
     {
         $params = self::getEncParams();
 
-        return openssl_decrypt($message, $params['cypher'], params['key'], self::$OPTIONS, $params['iv']);
+        return openssl_decrypt($message, $params['cypher'], $params['key'], self::$OPTIONS, $params['iv']);
     }
 
     private static function getEncParams(): array
