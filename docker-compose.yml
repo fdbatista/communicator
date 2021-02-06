@@ -21,7 +21,7 @@ services:
     networks:
       - beeper_network
     volumes:
-      - ./docker-volumes/db:/var/lib/mysql
+      - ./.docker-volumes/db:/var/lib/mysql
     env_file:
       - .env
     environment:
