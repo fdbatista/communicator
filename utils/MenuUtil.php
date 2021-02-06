@@ -26,7 +26,7 @@ class MenuUtil
                 '<li class="dropdown-header">' . Yii::$app->user->identity->user_name . '</li>',
                 (
                     '<li class="dropdown-item">'
-                    . Html::a('<i class="glyphicon glyphicon-edit"></i> Mi perfil', Url::to(['/users/profile']), ['class' => 'btn btn-link logout'])
+                    . Html::a('<i class="glyphicon glyphicon-lock"></i> Cambiar clave', Url::to(['/users/change-password']), ['class' => 'btn btn-link logout'])
                     . '</li>'
                 ),
                 (
