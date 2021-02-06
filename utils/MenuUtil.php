@@ -12,24 +12,43 @@ class MenuUtil
     {
         return [
             ['label' => '<i class="glyphicon glyphicon-home"></i> Inicio', 'url' => ['/messages/index']],
+            self::buildManagementDropdown(),
             ['label' => '<i class="glyphicon glyphicon-info-sign"></i> Acerca de', 'url' => ['/site/about']],
-            [
-                'label' => '<i class="glyphicon glyphicon-user"></i> ',
-                'items' => [
-                    '<li class="dropdown-header">' . Yii::$app->user->identity->user_name . '</li>',
-                    (
-                        '<li class="dropdown-item">'
-                        . Html::a('<i class="glyphicon glyphicon-edit"></i> Mi perfil', Url::to(['/user/profile']), ['class' => 'btn btn-link logout'])
-                        . '</li>'
-                    ),
-                    (
-                        '<li class="dropdown-item">'
-                        . Html::beginForm(['/site/logout'], 'post')
-                        . Html::submitButton('<i class="glyphicon glyphicon-off"></i> Salir', ['class' => 'btn btn-link logout'])
-                        . Html::endForm()
-                        . '</li>'
-                    ),
-                ],
+            self::buildUserMenuDropdown()
+        ];
+    }
+
+    private static function buildUserMenuDropdown() {
+        return [
+            'label' => '<i class="glyphicon glyphicon-user"></i>',
+            'visible' => !Yii::$app->user->isGuest,
+            'items' => [
+                '<li class="dropdown-header">' . Yii::$app->user->identity->user_name . '</li>',
+                (
+                    '<li class="dropdown-item">'
+                    . Html::a('<i class="glyphicon glyphicon-edit"></i> Mi perfil', Url::to(['/users/profile']), ['class' => 'btn btn-link logout'])
+                    . '</li>'
+                ),
+                (
+                    '<li class="dropdown-item">'
+                    . Html::beginForm(['/site/logout'], 'post')
+                    . Html::submitButton('<i class="glyphicon glyphicon-off"></i> Salir', ['class' => 'btn btn-link logout'])
+                    . Html::endForm()
+                    . '</li>'
+                ),
+            ],
+        ];
+    }
+
+    private static function buildManagementDropdown()
+    {
+        return [
+            'label' => '<i class="glyphicon glyphicon-cog"></i> Administrar',
+            'visible' => AuthUtil::iAmAdmin(),
+            'items' => [
+                    '<li class="dropdown-item">'
+                    . Html::a('<i class="glyphicon glyphicon-user"></i> Usuarios', Url::to(['/users/index']), ['class' => 'btn btn-link'])
+                    . '</li>',
             ],
         ];
     }
