@@ -13,10 +13,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="glyphicon glyphicon-plus-sign"></i> Crear usuario', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -26,17 +24,38 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            [
+                'attribute' => 'user_name',
+                'label' => 'Usuario',
+            ],
 
-            'id',
-            'user_name',
-            'full_name',
-            'password',
-            'auth_token',
-            //'mobile_number',
-            //'email:email',
+            [
+                'attribute' => 'full_name',
+                'label' => 'Nombre completo',
+            ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            'email:email',
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header' => 'Acciones',
+                'headerOptions' => ['style' => 'color:#337ab7'],
+                'template' => '{view} {update} {delete}',
+                'buttons' => [
+                    'view' => function ($url) {
+                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>', $url, ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Ver"]);
+                    },
+                    'update' => function ($url) {
+                        return Html::a('<i class="glyphicon glyphicon-edit"></i>', $url, ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Editar"]);
+                    },
+                    'delete' => function ($url) {
+                        return Html::a('<i class="glyphicon glyphicon-trash"></i>', $url, ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Eliminar", 'data' => [
+                            'confirm' => '¿Seguro que desea eliminar este mensaje?',
+                            'method' => 'post',
+                        ],]);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 
