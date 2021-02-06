@@ -4,7 +4,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\entities\User */
+/* @var $model app\models\CreateUserForm */
 /* @var $form yii\bootstrap\ActiveForm */
 ?>
 
@@ -40,6 +40,16 @@ use yii\helpers\Html;
             'maxlength' => true,
             'class' => 'form-control',
             'placeholder' => 'Contraseña',
+        ])
+        ->label(false) ?>
+
+    <?= $form->field($model, 'password_repeat', [
+        'inputTemplate' => '<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>{input}</div>',
+    ])
+        ->passwordInput([
+            'maxlength' => true,
+            'class' => 'form-control',
+            'placeholder' => 'Repetir contraseña',
         ])
         ->label(false) ?>
 

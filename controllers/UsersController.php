@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\CreateUserForm;
 use app\models\entities\User;
 use app\models\search\UserSearch;
 use app\utils\AuthUtil;
@@ -77,9 +78,9 @@ class UsersController extends BaseController
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new CreateUserForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
