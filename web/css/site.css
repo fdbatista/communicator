@@ -165,3 +165,8 @@ a.desc:after {
     background-color: #2b669a;
     color: #ffffff !important;
 }
+
+.unread-message {
+    font-weight: bold;
+    color: darkorange;
+}
