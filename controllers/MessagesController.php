@@ -96,12 +96,18 @@ class MessagesController extends BaseController
         $model = new Message();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->sender_id = Yii::$app->user->getId();
+            $recipients = Yii::$app->request->post('recipients');
 
-            if ($model->save()) {
-                $this->saveRecipients($model->id);
+            if ($recipients) {
+                $model->sender_id = AuthUtil::getMyId();
 
-                return $this->redirect(['index']);
+                if ($model->save()) {
+                    $this->saveRecipients($model);
+
+                    return $this->redirect(['index']);
+                }
+            } else {
+                Yii::$app->session->setFlash('danger', 'Debe seleccionar al menos un destinatario');
             }
         }
 
@@ -121,10 +127,17 @@ class MessagesController extends BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $this->updateRecipients($id);
+        if ($model->load(Yii::$app->request->post())) {
+            $recipients = Yii::$app->request->post('recipients');
 
-            return $this->redirect(['index']);
+            if ($recipients) {
+                $model->save();
+                $this->updateRecipients($model);
+
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->session->setFlash('danger', 'Debe seleccionar al menos un destinatario');
+            }
         }
 
         return $this->render('update', [
@@ -166,14 +179,14 @@ class MessagesController extends BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private function saveRecipients(int $messageId)
+    private function saveRecipients(Message $model)
     {
         $recipients = Yii::$app->request->post('recipients');
         $transaction = Yii::$app->db->beginTransaction();
 
         foreach ($recipients as $recipient) {
             $recipientModel = new MessageRecipient([
-                'message_id' => $messageId,
+                'message_id' => $model->id,
                 'recipient_id' => $recipient,
                 'unread' => 1,
             ]);
@@ -183,10 +196,11 @@ class MessagesController extends BaseController
         $transaction->commit();
     }
 
-    private function updateRecipients(int $messageId)
+    private function updateRecipients(Message $model)
     {
-        MessageRecipient::deleteAll(['message_id' => $messageId]);
-        $this->saveRecipients($messageId);
+        MessageRecipient::deleteAll(['message_id' => $model->id]);
+
+        return $this->saveRecipients($model);
     }
 
 }
