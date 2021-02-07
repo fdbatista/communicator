@@ -14,6 +14,10 @@ $this->title = 'Mensajes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="vmessage-recipient-index">
+    <p>
+        <?= Html::a('<i class="glyphicon glyphicon-plus-sign"></i> Redactar', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+
     <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -91,8 +95,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header' => 'Acciones',
                 'headerOptions' => ['style' => 'color:#337ab7'],
-                'template' => '{delete}',
+                'template' => '{reply} {delete}',
                 'buttons' => [
+                    'reply' => function ($url, $model) {
+                        return Html::a('<i class="glyphicon glyphicon-envelope"></i>', Url::to(['reply', 'id' => $model->message_id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Responder"]);
+                    },
                     'delete' => function ($url, $model) {
                         return Html::a('<i class="glyphicon glyphicon-trash"></i>', Url::to(['delete', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Eliminar", 'data' => [
                             'confirm' => '¿Seguro que desea eliminar este mensaje?',

@@ -3,7 +3,6 @@
 use app\assets\SummernoteAsset;
 use app\utils\AuthUtil;
 use app\utils\MessageRecipientsUtil;
-use kartik\editors\Summernote;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\web\YiiAsset;
@@ -30,11 +29,16 @@ SummernoteAsset::register($this);
 
     <p>
         <?php
-        if (AuthUtil::iAmAdmin())
+/*        if (AuthUtil::iAmAdmin())
             echo Html::a('<i class="glyphicon glyphicon-edit"></i> Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
-        ?>
+        */?>
 
         <?php
+
+        if ($model->sender_id !== AuthUtil::getMyId()) {
+            echo Html::a('<i class="glyphicon glyphicon-send"></i> Responder', ['reply', 'id' => $model->id], ['class' => 'btn btn-info', 'style' => 'margin-right: 10px']);
+        }
+
         echo Html::a('<i class="glyphicon glyphicon-trash"></i> Eliminar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -93,5 +97,11 @@ SummernoteAsset::register($this);
         'model' => $model,
         'attributes' => $attributes,
     ]) ?>
+
+    <?php
+    if ($model->sender_id !== AuthUtil::getMyId()) {
+        echo Html::a('<i class="glyphicon glyphicon-send"></i> Responder', ['reply', 'id' => $model->id], ['class' => 'btn btn-info', 'style' => 'margin-right: 10px']);
+    }
+    ?>
 
 </div>

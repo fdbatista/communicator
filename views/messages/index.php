@@ -18,10 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="message-index">
     <p>
-        <?php
-        if (AuthUtil::iAmAdmin())
-            echo Html::a('<i class="glyphicon glyphicon-plus-sign"></i> Redactar', ['create'], ['class' => 'btn btn-success']);
-        ?>
+        <?= Html::a('<i class="glyphicon glyphicon-plus-sign"></i> Redactar', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -83,18 +80,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header' => 'Acciones',
                 'headerOptions' => ['style' => 'color:#337ab7'],
-                'template' => '{reply} {update} {delete}',
+                'template' => '{reply} {delete}',
                 'buttons' => [
                     'reply' => function ($url, Message $model) {
                         return $model->sender_id !== AuthUtil::getMyId()
                             ? Html::a('<i class="glyphicon glyphicon-envelope"></i>', Url::to(['reply', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Responder"])
                             : '';
                     },
-                    'update' => function ($url, Message $model) {
+                    /*'update' => function ($url, Message $model) {
                         return AuthUtil::iAmAdmin()
                             ? Html::a('<i class="glyphicon glyphicon-edit"></i>', Url::to(['update', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Editar"])
                             : '';
-                    },
+                    },*/
                     'delete' => function ($url, Message $model) {
                         return Html::a('<i class="glyphicon glyphicon-trash"></i>', Url::to(['delete', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Eliminar", 'data' => [
                             'confirm' => '¿Seguro que desea eliminar este mensaje?',
