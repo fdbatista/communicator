@@ -12,10 +12,19 @@ class MessageRecipientsUtil
     {
         $myId = AuthUtil::getMyId();
 
-        $users = User::find()
-            ->where("id <> $myId")
-            ->select(['id', 'full_name'])
-            ->all();
+        if (AuthUtil::iAmAdmin()) {
+            $users = User::find()
+                ->where("id <> $myId")
+                ->select(['id', 'full_name'])
+                ->all();
+        } else {
+            $users = User::find()
+                ->innerJoin('role_user', 'role_user.user_id = user.id')
+                ->where("user.id <> $myId")
+                ->andWhere("role_user.role_id = 1")
+                ->select(['user.id', 'full_name'])
+                ->all();
+        }
 
         $result = [];
 
@@ -56,6 +65,16 @@ class MessageRecipientsUtil
         return array_map(function ($user) {
             return $user->full_name;
         }, $recipients);
+    }
+
+    public static function isUnreadForMe($messageId)
+    {
+        return MessageRecipient::find()
+            ->where([
+                'message_id' => $messageId,
+                'recipient_id' => AuthUtil::getMyId(),
+                'unread' => 1,
+            ])->exists();
     }
 
 }
