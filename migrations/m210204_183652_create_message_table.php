@@ -24,6 +24,7 @@ class m210204_183652_create_message_table extends Migration
         $this->addForeignKey('fk_message_type', 'message', 'type_id', 'message_type', 'id', 'cascade', 'cascade');
         $this->addForeignKey('fk_message_sender', 'message', 'sender_id', 'user', 'id', 'cascade', 'cascade');
 
+        $this->createIndex('idx_message_created_at', 'message', 'created_at');
     }
 
     /**

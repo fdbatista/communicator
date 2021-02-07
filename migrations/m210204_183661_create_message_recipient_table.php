@@ -21,6 +21,7 @@ class m210204_183661_create_message_recipient_table extends Migration
         ]);
 
         $this->createIndex('idx_message_recipient_unique', 'message_recipient', 'message_id, recipient_id', true);
+        $this->createIndex('idx_message_recip_unread', 'message_recipient', 'unread');
 
         $this->addForeignKey('fk_message_recipient_message', 'message_recipient', 'message_id', 'message', 'id', 'cascade', 'cascade');
         $this->addForeignKey('fk_message_recipient_recipient', 'message_recipient', 'recipient_id', 'user', 'id', 'cascade', 'cascade');
