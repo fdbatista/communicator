@@ -35,7 +35,7 @@ class MessagesController extends BaseController
                         }
                     ],
                     [
-                        'actions' => ['index', 'view', 'create', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'delete', 'reply'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -111,7 +111,7 @@ class MessagesController extends BaseController
                 $model->sender_id = AuthUtil::getMyId();
 
                 if ($model->save()) {
-                    $this->saveRecipients($model);
+                    $this->saveRecipients($model, $recipients);
 
                     return $this->redirect(['index']);
                 }
@@ -188,9 +188,8 @@ class MessagesController extends BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private function saveRecipients(Message $model)
+    private function saveRecipients(Message $model, $recipients)
     {
-        $recipients = Yii::$app->request->post('recipients');
         $transaction = Yii::$app->db->beginTransaction();
 
         foreach ($recipients as $recipient) {
@@ -209,7 +208,31 @@ class MessagesController extends BaseController
     {
         MessageRecipient::deleteAll(['message_id' => $model->id]);
 
-        return $this->saveRecipients($model);
+        return $this->saveRecipients($model, Yii::$app->request->post('recipients'));
+    }
+
+    public function actionReply($id)
+    {
+        $originalMessage = $this->findModel($id);
+
+        $model = new Message([
+            'subject' => "Re: $originalMessage->subject",
+            'sender_id' => AuthUtil::getMyId(),
+        ]);
+
+        if ($model->load(Yii::$app->request->post())) {
+            $recipients = [$originalMessage->sender_id];
+
+            if ($model->save()) {
+                $this->saveRecipients($model, $recipients);
+
+                return $this->redirect(['index']);
+            }
+        }
+
+        return $this->render('reply', [
+            'model' => $model,
+        ]);
     }
 
 }
