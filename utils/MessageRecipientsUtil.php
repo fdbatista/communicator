@@ -12,19 +12,10 @@ class MessageRecipientsUtil
     {
         $myId = AuthUtil::getMyId();
 
-        if (AuthUtil::iAmAdmin()) {
-            $users = User::find()
-                ->where("id <> $myId")
-                ->select(['id', 'full_name'])
-                ->all();
-        } else {
-            $users = User::find()
-                ->innerJoin('role_user', 'role_user.user_id = user.id')
-                ->where("user.id <> $myId")
-                ->andWhere("role_user.role_id = 1")
-                ->select(['user.id', 'full_name'])
-                ->all();
-        }
+        $users = User::find()
+            ->where("id <> $myId")
+            ->select(['id', 'full_name'])
+            ->all();
 
         $result = [];
 
