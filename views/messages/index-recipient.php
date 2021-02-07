@@ -4,6 +4,7 @@ use kartik\daterange\DateRangePicker;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\View;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -12,6 +13,8 @@ use yii\widgets\Pjax;
 
 $this->title = 'Mensajes';
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerJsFile('@web/js/reload_page.js', ['position' => View::POS_END]);
 ?>
 <div class="vmessage-recipient-index">
     <p>
