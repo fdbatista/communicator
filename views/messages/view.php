@@ -1,9 +1,11 @@
 <?php
 
+use app\assets\SummernoteAsset;
 use app\utils\AuthUtil;
 use app\utils\MessageRecipientsUtil;
 use kartik\editors\Summernote;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
@@ -14,8 +16,15 @@ use yii\widgets\DetailView;
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Mensajes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
 $this->registerCssFile('@web/css/view-message.css');
+$this->registerJsFile('@web/js/make_summernote_read_only.js', [
+    'position' => View::POS_END,
+    'depends' => [yii\web\JqueryAsset::class]
+]);
+
 YiiAsset::register($this);
+SummernoteAsset::register($this);
 ?>
 <div class="message-view">
 
@@ -60,16 +69,7 @@ YiiAsset::register($this);
             'label' => 'Mensaje',
             'format' => 'raw',
             'value' => function ($model) {
-                return Summernote::widget([
-                    'model' => $model,
-                    'attribute' => 'body',
-                    'useKrajeeStyle' => true,
-                    'useKrajeePresets' => true,
-                    'enableFullScreen' => false,
-                    'enableCodeView' => false,
-                    'enableHelp' => false,
-                    'enableHintEmojis' => false,
-                ]);
+                return "<textarea class='summernote'>$model->body</textarea>";
             }
         ],
     ];

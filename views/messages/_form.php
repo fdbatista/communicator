@@ -1,7 +1,7 @@
 <?php
 
+use app\assets\SummernoteAsset;
 use app\utils\MessageRecipientsUtil;
-use kartik\editors\Summernote;
 use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -9,6 +9,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\entities\Message */
 /* @var $form yii\widgets\ActiveForm */
+
+SummernoteAsset::register($this);
 ?>
 
 <div class="message-form">
@@ -37,17 +39,7 @@ use yii\widgets\ActiveForm;
 
         <div class="row" style="padding-bottom: 20px">
             <div class="col-lg-10">
-                <label>Contenido del mensaje</label>
-                <?= Summernote::widget([
-                    'model' => $model,
-                    'attribute' => 'body',
-                    'useKrajeeStyle' => true,
-                    'useKrajeePresets' => true,
-                    'enableFullScreen' => false,
-                    'enableCodeView' => false,
-                    'enableHelp' => false,
-                    'enableHintEmojis' => true,
-                ]) ?>
+                <?= $form->field($model, 'body')->textarea(['class' => 'summernote'])->label('Mensaje') ?>
             </div>
         </div>
 

@@ -1,7 +1,12 @@
-.note-toolbar, .note-status-output {
+.note-toolbar, .note-statusbar {
     display: none !important;
 }
 
-.kv-editor-container {
+.note-editing-area {
+    background-color: white!important;
+}
+
+.note-editor {
     border: none !important;
 }
+

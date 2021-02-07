@@ -28,7 +28,7 @@ $this->title = 'Acceder';
 
                 <div class="panel-body">
                     <?php if ($loginModel->hasErrors('password')) { ?>
-                        <div class="alert alert-danger small">
+                        <div class="alert alert-danger">
                             <i class="glyphicon glyphicon-alert"></i>
                             <span style="margin-left: 5px"><?= $loginModel->errors['password'][0] ?></span>
                         </div>

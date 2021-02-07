@@ -2,6 +2,7 @@
 
 use app\models\entities\Message;
 use app\utils\AuthUtil;
+use app\utils\MessageRecipientsUtil;
 use kartik\daterange\DateRangePicker;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -31,12 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             [
-                'attribute' => 'sender',
-                'label' => 'Remitente',
-                'value' => 'sender.full_name',
-            ],
-
-            [
                 'label' => 'Fecha',
                 'attribute' => 'created_at',
                 'format' => 'datetime',
@@ -53,18 +48,47 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
+                'attribute' => 'sender',
+                'label' => 'Remitente',
+                'format' => 'raw',
+                'value' => function (Message $model) {
+                    $spanClass = MessageRecipientsUtil::isUnreadForMe($model->id) ? 'unread-message' : '';
+
+                    return Html::a($model->sender->full_name, Url::to(['view', 'id' => $model->id]), [
+                        'class' => $spanClass,
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'title' => 'Ver mensaje'
+                    ]);
+                },
+            ],
+
+            [
                 'attribute' => 'subject',
                 'label' => 'Asunto',
+                'format' => 'raw',
+                'value' => function (Message $model) {
+                    $spanClass = MessageRecipientsUtil::isUnreadForMe($model->id) ? 'unread-message' : '';
+
+                    return Html::a($model->subject, Url::to(['view', 'id' => $model->id]), [
+                        'class' => $spanClass,
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'title' => 'Ver mensaje'
+                    ]);
+                },
             ],
 
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => 'Acciones',
                 'headerOptions' => ['style' => 'color:#337ab7'],
-                'template' => '{view} {update} {delete}',
+                'template' => '{reply} {update} {delete}',
                 'buttons' => [
-                    'view' => function ($url, Message $model) {
-                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>', Url::to(['view', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Ver"]);
+                    'reply' => function ($url, Message $model) {
+                        return $model->sender_id !== AuthUtil::getMyId()
+                            ? Html::a('<i class="glyphicon glyphicon-envelope"></i>', Url::to(['reply', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Responder"])
+                            : '';
                     },
                     'update' => function ($url, Message $model) {
                         return AuthUtil::iAmAdmin()
