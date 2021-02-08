@@ -17,7 +17,7 @@ $this->title = 'Acceder';
 
 <div class="container">
     <div id="login-box" class="row form-box">
-        <div class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <div class="panel-title">
