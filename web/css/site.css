@@ -118,22 +118,26 @@ a.desc:after {
     color: #ffffff;
 }
 
-.navbar-inverse {
-    background: #2dacf0;
-    background: -moz-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
-    background: -webkit-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
-    background: -o-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
-    background: -ms-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
-    background: linear-gradient(to right, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2dacf0', endColorstr='#2b669a', GradientType=1);
-    color: #ffffff !important;
-    border-bottom: none;
-}
-
 .footer {
     background: #5aa7d1;
     color: #ffffff !important;
     border-top: none;
+}
+
+.mt-5 {
+    margin-top: -5px;
+}
+
+.unread-message {
+    font-weight: bold;
+    color: darkorange;
+}
+
+.navbar-inverse .btn-link {
+    text-decoration: none;
+    text-align: left;
+    width: 100%;
+    padding: 10px 0 10px 20px !important;
 }
 
 .navbar-inverse .navbar-nav > li > a {
@@ -145,28 +149,32 @@ a.desc:after {
     background-color: #1f4971;
 }
 
-.mt-5 {
-    margin-top: -5px;
-}
-
-.navbar li:hover {
-    background-color: #2b669a !important;
-}
-
-.navbar-inverse .btn-link {
-    color: #2b669a !important;
-    text-decoration: none;
-    text-align: left;
-    width: 100%;
-    padding: 10px 0 10px 20px !important;
-}
-
-.navbar-inverse .btn-link:hover {
-    background-color: #2b669a;
+.navbar-inverse {
+    background: -moz-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
+    background: -webkit-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
+    background: -o-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
+    background: -ms-linear-gradient(left, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
+    background: linear-gradient(to right, #2dacf0 0%, #2dacf0 37%, #2b669a 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2dacf0', endColorstr='#2b669a', GradientType=1);
     color: #ffffff !important;
+    border-bottom: none;
 }
 
-.unread-message {
-    font-weight: bold;
-    color: darkorange;
+.navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
+.navbar-inverse .navbar-nav .open .dropdown-menu > li button:hover {
+    background: #2b669a;
+    color: #ffffff!important;
+}
+
+@media (max-width: 799px) {
+    .navbar-inverse .navbar-nav .open .dropdown-menu > li > a,
+    .navbar-inverse .navbar-nav .open .dropdown-menu > li button {
+        color: #ffffff;
+    }
+}
+
+@media (min-width: 800px) {
+    .navbar-inverse .btn-link {
+        color: #2b669a !important;
+    }
 }
