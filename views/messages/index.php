@@ -2,6 +2,7 @@
 
 use app\models\entities\Message;
 use app\utils\AuthUtil;
+use app\utils\EncryptUtil;
 use app\utils\MessageRecipientsUtil;
 use kartik\daterange\DateRangePicker;
 use yii\grid\GridView;
@@ -70,7 +71,7 @@ $this->registerJsFile('@web/js/reload_page.js', ['position' => View::POS_END]);
                 'value' => function (Message $model) {
                     $spanClass = MessageRecipientsUtil::isUnreadForMe($model->id) ? 'unread-message' : '';
 
-                    return Html::a($model->subject, Url::to(['view', 'id' => $model->id]), [
+                    return Html::a(EncryptUtil::decrypt($model->subject), Url::to(['view', 'id' => $model->id]), [
                         'class' => $spanClass,
                         'data-toggle' => 'tooltip',
                         'data-placement' => 'top',

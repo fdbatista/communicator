@@ -1,5 +1,6 @@
 <?php
 
+use app\utils\EncryptUtil;
 use kartik\daterange\DateRangePicker;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -69,7 +70,7 @@ $this->registerJsFile('@web/js/reload_page.js', ['position' => View::POS_END]);
                     $spanClass = $model->unread === 1 ? 'unread-message' : '';
                     $icon = $model->unread === 1 ? '<i class="glyphicon glyphicon-certificate"></i>' : '';
 
-                    return Html::a("$icon $model->subject", Url::to(['view', 'id' => $model->message_id]), [
+                    return Html::a("$icon ". EncryptUtil::decrypt($model->subject), Url::to(['view', 'id' => $model->message_id]), [
                         'class' => $spanClass,
                         'data-toggle' => 'tooltip',
                         'data-placement' => 'top',
