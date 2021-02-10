@@ -8,6 +8,7 @@ use app\models\entities\RoleUser;
 use app\models\entities\User;
 use app\models\search\UserSearch;
 use app\utils\AuthUtil;
+use app\utils\EncryptUtil;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -70,6 +71,7 @@ class UsersController extends BaseController
             $attributes = $model->getAttributes(['user_name', 'full_name', 'mobile_number', 'email']);
 
             $user = new User($attributes);
+            $this->encryptModel($user);
             $user->auth_token = Yii::$app->security->generateRandomString(16);
             $user->password = Yii::$app->security->generatePasswordHash($model->password);
             $user->save();
@@ -92,8 +94,12 @@ class UsersController extends BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            $this->encryptModel($model);
+
+            if ($model->save()) {
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('update', [
@@ -111,10 +117,32 @@ class UsersController extends BaseController
     protected function findModel($id)
     {
         if (($model = User::findOne($id)) !== null) {
-            return $model;
+            return $this->decryptModel($model);
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function decryptModel(User $model){
+        $model->user_name = EncryptUtil::decrypt($model->user_name);
+        $model->full_name = EncryptUtil::decrypt($model->full_name);
+        $model->email = EncryptUtil::decrypt($model->email);
+
+        if ($model->mobile_number) {
+            $model->mobile_number = EncryptUtil::decrypt($model->mobile_number);
+        }
+
+        return $model;
+    }
+
+    private function encryptModel(User &$model){
+        $model->user_name = EncryptUtil::encrypt($model->user_name);
+        $model->full_name = EncryptUtil::encrypt($model->full_name);
+        $model->email = EncryptUtil::encrypt($model->email);
+
+        if ($model->mobile_number) {
+            $model->mobile_number = EncryptUtil::encrypt($model->mobile_number);
+        }
     }
 
     public function actionChangePassword()
@@ -123,8 +151,11 @@ class UsersController extends BaseController
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $userModel = $this->findModel(AuthUtil::getMyId());
-            $userModel->password = Yii::$app->security->generatePasswordHash($model->new_password);
-            $userModel->save();
+            //$userModel->password = Yii::$app->security->generatePasswordHash($model->new_password);
+            $userModel->updateAttributes([
+                'password' => Yii::$app->security->generatePasswordHash($model->new_password),
+            ]);
+
             Yii::$app->session->setFlash('success', 'La contraseña ha sido actualizada');
 
             return $this->redirect(['/']);

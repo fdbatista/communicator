@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\LoginForm;
 use app\models\ResetPasswordModel;
+use app\utils\EncryptUtil;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -66,8 +67,14 @@ class SiteController extends Controller
         }
 
         $loginModel = new LoginForm();
-        if ($loginModel->load(Yii::$app->request->post()) && $loginModel->login()) {
-            return $this->goBack();
+        if ($loginModel->load(Yii::$app->request->post())) {
+            $loginModel->username = EncryptUtil::encrypt($loginModel->username);
+
+            if ($loginModel->login()) {
+                return $this->goBack();
+            } else {
+                $loginModel->username = EncryptUtil::decrypt($loginModel->username);
+            }
         }
 
         return $this->render('login', [

@@ -20,7 +20,7 @@ class MessageRecipientsUtil
         $result = [];
 
         foreach ($users as $user) {
-            $result[$user->id] = $user->full_name;
+            $result[$user->id] = EncryptUtil::decrypt($user->full_name);
         }
 
         return $result;
