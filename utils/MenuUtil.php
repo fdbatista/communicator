@@ -23,7 +23,7 @@ class MenuUtil
             'label' => '<i class="glyphicon glyphicon-user"></i>',
             'visible' => !Yii::$app->user->isGuest,
             'items' => [
-                '<li class="dropdown-header">' . Yii::$app->user->identity->user_name . '</li>',
+                '<li class="dropdown-header">' . AuthUtil::getMyUsername() . '</li>',
                 (
                     '<li class="dropdown-item">'
                     . Html::a('<i class="glyphicon glyphicon-lock"></i> Cambiar clave', Url::to(['/users/change-password']), ['class' => 'btn btn-link'])

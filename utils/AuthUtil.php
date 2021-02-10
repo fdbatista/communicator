@@ -15,4 +15,9 @@ class AuthUtil
     {
         return Yii::$app->user->identity->getId();
     }
+
+    public static function getMyUsername()
+    {
+        return EncryptUtil::decrypt(Yii::$app->user->identity->user_name);
+    }
 }
