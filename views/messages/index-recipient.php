@@ -53,7 +53,7 @@ $this->registerJsFile('@web/js/reload_page.js', ['position' => View::POS_END]);
                 'value' => function ($model) {
                     $spanClass = $model->unread === 1 ? 'unread-message' : '';
 
-                    return Html::a($model->sender, Url::to(['view', 'id' => $model->message_id]), [
+                    return Html::a(EncryptUtil::decrypt($model->sender), Url::to(['view', 'id' => $model->message_id]), [
                         'class' => $spanClass,
                         'data-toggle' => 'tooltip',
                         'data-placement' => 'top',

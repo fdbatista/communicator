@@ -2,7 +2,7 @@
 
 use app\assets\SummernoteAsset;
 use app\utils\AuthUtil;
-use app\utils\MessageRecipientsUtil;
+use app\utils\EncryptUtil;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\web\YiiAsset;
@@ -26,13 +26,7 @@ YiiAsset::register($this);
 SummernoteAsset::register($this);
 ?>
 <div class="message-view">
-
     <p>
-        <?php
-/*        if (AuthUtil::iAmAdmin())
-            echo Html::a('<i class="glyphicon glyphicon-edit"></i> Editar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
-        */?>
-
         <?php
 
         if ($model->sender_id !== AuthUtil::getMyId()) {
@@ -60,7 +54,7 @@ SummernoteAsset::register($this);
         [
             'attribute' => 'sender',
             'label' => 'Remitente',
-            'value' => $model->sender->full_name,
+            'value' => EncryptUtil::decrypt($model->sender->full_name),
         ],
 
         [
@@ -77,21 +71,6 @@ SummernoteAsset::register($this);
             }
         ],
     ];
-
-    if (AuthUtil::iAmAdmin()) {
-        $recipients = MessageRecipientsUtil::getMessageRecipientsNames($model);
-        $readers = MessageRecipientsUtil::readBy($model->id);
-
-        $attributes[] = [
-            'label' => 'Enviado a',
-            'value' => implode(', ', $recipients),
-        ];
-
-        $attributes[] = [
-            'label' => 'Leído por',
-            'value' => implode(', ', $readers),
-        ];
-    }
 
     echo DetailView::widget([
         'model' => $model,

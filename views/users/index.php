@@ -1,5 +1,6 @@
 <?php
 
+use app\utils\EncryptUtil;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -27,14 +28,27 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'user_name',
                 'label' => 'Usuario',
+                'value' => function ($model) {
+                    return EncryptUtil::decrypt($model->user_name);
+                },
             ],
 
             [
                 'attribute' => 'full_name',
                 'label' => 'Nombre completo',
+                'value' => function ($model) {
+                    return EncryptUtil::decrypt($model->full_name);
+                },
             ],
 
-            'email:email',
+            [
+                'attribute' => 'email',
+                'format' => 'email',
+                'label' => 'Email',
+                'value' => function ($model) {
+                    return EncryptUtil::decrypt($model->email);
+                },
+            ],
 
             [
                 'class' => 'yii\grid\ActionColumn',
