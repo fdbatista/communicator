@@ -55,7 +55,7 @@ $this->registerJsFile('@web/js/reload_page.js', ['position' => View::POS_END]);
                 'value' => function (Message $model) {
                     $spanClass = MessageRecipientsUtil::isUnreadForMe($model->id) ? 'unread-message' : '';
 
-                    return Html::a($model->sender->full_name, Url::to(['view', 'id' => $model->id]), [
+                    return Html::a(EncryptUtil::decrypt($model->sender->full_name), Url::to(['view', 'id' => $model->id]), [
                         'class' => $spanClass,
                         'data-toggle' => 'tooltip',
                         'data-placement' => 'top',
@@ -91,11 +91,6 @@ $this->registerJsFile('@web/js/reload_page.js', ['position' => View::POS_END]);
                             ? Html::a('<i class="glyphicon glyphicon-envelope"></i>', Url::to(['reply', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Responder"])
                             : '';
                     },
-                    /*'update' => function ($url, Message $model) {
-                        return AuthUtil::iAmAdmin()
-                            ? Html::a('<i class="glyphicon glyphicon-edit"></i>', Url::to(['update', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Editar"])
-                            : '';
-                    },*/
                     'delete' => function ($url, Message $model) {
                         return Html::a('<i class="glyphicon glyphicon-trash"></i>', Url::to(['delete', 'id' => $model->id]), ['data-toggle' => "tooltip", 'data-placement' => "top", 'title' => "Eliminar", 'data' => [
                             'confirm' => '¿Seguro que desea eliminar este mensaje?',
