@@ -5,7 +5,7 @@ namespace app\utils;
 
 class EncryptUtil
 {
-    private static int $OPTIONS = 0;
+    private static $OPTIONS = 0;
 
     public static function encrypt(string $message)
     {
